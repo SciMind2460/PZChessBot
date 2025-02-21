@@ -182,6 +182,8 @@ void Board::make_move(Move move) {
 			piece_boards[piece] ^= square_bits(move.dst());
 			piece_boards[OPPOCC(side)] ^= square_bits(move.dst());
 			halfmove_clock = 0;
+		} else {
+			halfmove_clock += 1;
 		}
 		// Remove the pawn on the src and add the piece on the dst
 		mailbox[move.src()] = NO_PIECE;
@@ -219,6 +221,7 @@ void Board::make_move(Move move) {
 		piece_boards[ROOK] ^= rook_mask;
 		// Remove castling rights
 		castling &= ~((WHITE_OO | WHITE_OOO) << (side << 1));
+		halfmove_clock += 1;
 	} else {
 		// Handle captures
 		if (piece_boards[OPPOCC(side)] & square_bits(move.dst())) { // If opposite occupancy bit set on destination (capture)
@@ -227,6 +230,8 @@ void Board::make_move(Move move) {
 			piece_boards[piece] ^= square_bits(move.dst());
 			piece_boards[OPPOCC(side)] ^= square_bits(move.dst());
 			halfmove_clock = 0; 
+		} else {
+			halfmove_clock += 1;
 		}
 		// Get piece that is moving
 		uint8_t piece = mailbox[move.src()] & 0b111;
@@ -236,8 +241,9 @@ void Board::make_move(Move move) {
 		// Update piece and occupancy bitboard
 		piece_boards[piece] ^= square_bits(move.src()) | square_bits(move.dst());
 		piece_boards[OCC(side)] ^= square_bits(move.src()) | square_bits(move.dst());
+	
 		// Handle castling rights
-		if (piece == KING) {
+		if (piece == KING) 
 			castling &= ~((WHITE_OO | WHITE_OOO) << (side << 1));
 		} else if (piece == ROOK) {
 			if (move.src() == SQ_A1 || move.dst() == SQ_A1)
