@@ -89,6 +89,14 @@ void Board::load_fen(std::string fen) {
 		inputIdx += 2;
 	}
 
+	// Load halfmove clock
+	if (fen[inputIdx + 1] > '0') {
+		halfmove_clock = (fen[inputIdx] - '0') * 10 + (fen[inputIdx + 1] - '0');
+		inputIdx += 3;
+	} else {
+		halfmove_clock = (fen[inputIdx] - '0');
+		inputIdx += 2;
+	}
 	// Ignore the rest (who cares anyways)
 }
 
