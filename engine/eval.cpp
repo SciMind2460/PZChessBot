@@ -17,6 +17,10 @@ Value eval(const Board &board) {
 	Value material = 0;
 	Value controlled = 0;
 
+	if (board.halfmove_clock >= 50) {
+		return VALUE_ZERO;
+	}
+
 	material += PawnValue * _mm_popcnt_u64(board.piece_boards[PAWN] & board.piece_boards[OCC(WHITE)]);
 	material += KnightValue * _mm_popcnt_u64(board.piece_boards[KNIGHT] & board.piece_boards[OCC(WHITE)]);
 	material += BishopValue * _mm_popcnt_u64(board.piece_boards[BISHOP] & board.piece_boards[OCC(WHITE)]);
