@@ -73,22 +73,26 @@ static constexpr Move NullMove = Move(0);
 // bits 16-19: captured piece
 // bits 20-23: previous castling rights
 // bits 24-29: previous en passant square
+// bits 29-38: previous halfmove clock
 struct HistoryEntry {
 	uint32_t data;
 	constexpr explicit HistoryEntry(uint32_t d) : data(d) {}
 	constexpr HistoryEntry(Move m, Piece prev_piece, uint8_t prev_castling, Square prev_ep)
-		: data(m.data | ((uint32_t)prev_piece << 16) | ((uint32_t)prev_castling << 20) | ((uint32_t)prev_ep << 24)) {}
+		: data(m.data | ((uint32_t)prev_piece << 16) | ((uint32_t)prev_castling << 20) | ((uint32_t)prev_ep << 24) | ((uint32_t)prev_halfmove_clock << 28) {}
 	constexpr Move move() {
 		return Move(data & 0xffff);
 	}
 	constexpr Piece prev_piece() {
-		return Piece((data >> 16) & 0b1111);
+		return Piece((data >> 15) & 0b1111);
 	}
 	constexpr uint8_t prev_castling() {
 		return (data >> 19) & 0b1111;
 	}
 	constexpr Square prev_ep() {
 		return Square((data >> 23) & 0b111111);
+	}
+        constexpr uint16_t prev_halfmove() {
+		return (data >> 28) & 0b1111111111;
 	}
 };
 
@@ -101,7 +105,6 @@ struct Board {
 	uint8_t castling = 0xf;
 	Square ep_square = SQ_NONE;
         uint16_t halfmove_clock = 0;
-        uint16_t previous_halfmove_clock = 0; // For unmake_move to have a fallback value
 
 	// Mailbox representation of the board for faster queries of certain data
 	Piece mailbox[8 * 8] = {WHITE_ROOK, WHITE_KNIGHT, WHITE_BISHOP, WHITE_QUEEN, WHITE_KING, WHITE_BISHOP, WHITE_KNIGHT, WHITE_ROOK,
