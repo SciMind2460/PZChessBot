@@ -181,6 +181,7 @@ void Board::make_move(Move move) {
 			uint8_t piece = mailbox[move.dst()] & 0b111;
 			piece_boards[piece] ^= square_bits(move.dst());
 			piece_boards[OPPOCC(side)] ^= square_bits(move.dst());
+			halfmove_clock = 0;
 		}
 		// Remove the pawn on the src and add the piece on the dst
 		mailbox[move.src()] = NO_PIECE;
@@ -196,6 +197,7 @@ void Board::make_move(Move move) {
 		piece_boards[PAWN] ^= square_bits(move.src()) | square_bits(move.dst()) | square_bits(Rank(move.src() >> 3), File(move.dst() & 0b111));
 		piece_boards[OCC(side)] ^= square_bits(move.src()) | square_bits(move.dst());
 		piece_boards[OPPOCC(side)] ^= square_bits(Rank(move.src() >> 3), File(move.dst() & 0b111));
+		halfmove_clock = 0;
 	} else if (move.type() == CASTLING) {
 		// Calculate where the rook is
 		Bitboard rook_mask;
@@ -224,6 +226,7 @@ void Board::make_move(Move move) {
 			uint8_t piece = mailbox[move.dst()] & 0b111;
 			piece_boards[piece] ^= square_bits(move.dst());
 			piece_boards[OPPOCC(side)] ^= square_bits(move.dst());
+			halfmove_clock = 0; 
 		}
 		// Get piece that is moving
 		uint8_t piece = mailbox[move.src()] & 0b111;
