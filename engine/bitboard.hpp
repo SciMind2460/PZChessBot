@@ -77,7 +77,7 @@ static constexpr Move NullMove = Move(0);
 struct HistoryEntry {
 	uint32_t data;
 	constexpr explicit HistoryEntry(uint32_t d) : data(d) {}
-	constexpr HistoryEntry(Move m, Piece prev_piece, uint8_t prev_castling, Square prev_ep)
+	constexpr HistoryEntry(Move m, Piece prev_piece, uint8_t prev_castling, Square prev_ep, uint16_t prev_halfmove_clock)
 		: data(m.data | ((uint32_t)prev_piece << 16) | ((uint32_t)prev_castling << 20) | ((uint32_t)prev_ep << 24) | ((uint32_t)prev_halfmove_clock << 28) {}
 	constexpr Move move() {
 		return Move(data & 0xffff);
