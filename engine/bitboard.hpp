@@ -101,6 +101,7 @@ struct Board {
 	uint8_t castling = 0xf;
 	Square ep_square = SQ_NONE;
         uint16_t halfmove_clock = 0;
+        uint16_t previous_halfmove_clock = 0; // For unmake_move to have a fallback value
 
 	// Mailbox representation of the board for faster queries of certain data
 	Piece mailbox[8 * 8] = {WHITE_ROOK, WHITE_KNIGHT, WHITE_BISHOP, WHITE_QUEEN, WHITE_KING, WHITE_BISHOP, WHITE_KNIGHT, WHITE_ROOK,
